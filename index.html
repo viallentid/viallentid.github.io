@@ -48,6 +48,10 @@ body {font-family: Arial, Helvetica, sans-serif;}
   width: auto;
   height: 100%;
 }
+
+.inversion {
+  transform: rotate(180deg); 
+}
 </style>
 </head>
 <body>
@@ -157,6 +161,9 @@ body {font-family: Arial, Helvetica, sans-serif;}
 </div>
 
 <br><br>
+<input type="checkbox" id="inversion" name="inversion" value="inv">
+<label for="inversion">Inversion included</label><br>
+<br>
 <button id="pick_1_all">PICK A ALL</button>
 <button id="pick_1_major">PICK A MAJOR</button>
 <button id="pick_1_minor">PICK A MINOR</button>
@@ -183,22 +190,35 @@ var btn_1_disks = document.getElementById("pick_1_disks");
 // Get the <span> element that closes the modal
 var span = document.getElementsByClassName("close")[0];
 
+//Deck globle
+var deck_inversion = Array(78).fill(false);
+var ans_inversion = false;
+
 //functions
 function get_a_cardid(start, end) {
     var range = end - start + 1;
     var ans = start + Math.floor(Math.random() * range);
+    //inversion
+    if (document.querySelector('#inversion').checked) {
+      deck_inversion = deck_inversion.map((item) => Math.random() >= 0.5)
+      ans_inversion = deck_inversion[ans];
+    } else {
+      ans_inversion = false;
+    }
     ans = "thoth_" + ans;
-    console.log(ans)
+    console.log(ans_inversion);
+    console.log(ans);
     return ans;
 }
-
 function show_a_card(img) {
     var exist_img = document.getElementById("card_result");
     if (exist_img != null) {
     document.getElementById("card_show").removeChild(exist_img);    
     }
     var new_img = img.cloneNode(true);
-    //new_img.classList.add("responsive");
+    if (ans_inversion) {
+      new_img.classList.add("inversion");
+    }
     new_img.alt = "result";
     new_img.width = 340;
     new_img.height = 500;
